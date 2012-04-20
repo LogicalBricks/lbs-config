@@ -14,4 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = "lbs-config"
   gem.require_paths = ["lib"]
   gem.version       = Lbs::Config::VERSION
+
+  gem.add_dependency 'rieles'
 end
