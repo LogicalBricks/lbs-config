@@ -1,9 +1,0 @@
-Description:
-    Genera un archivo de inflections para obtener el plural y singular de las palabras, según las reglas en Español e incluye la traducción por omisión de rails para el locale es.yml
-
-Example:
-    rails generate lbs:hispanizar
-
-    This will create:
-        config/initializers/inflections.rb
-        config/locales/es.rb
