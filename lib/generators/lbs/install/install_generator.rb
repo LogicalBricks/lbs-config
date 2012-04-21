@@ -6,7 +6,7 @@ module Lbs
 
     argument :model_attributes, :type => :array, :default => []
 
-    class_option :engine, 
+    class_option 'template-engine', 
       :type => :string, 
       :default => 'erb', 
       :desc => 'Indica qué debe usarse para generar la vista [erb, haml]'
@@ -18,7 +18,7 @@ module Lbs
       :type => :boolean, 
       :default => false, 
       :desc => 'Indica si la vista se generará enfocada en boostrap'
-    class_option :form, 
+    class_option 'form-builder', 
       :type => :string, 
       :default => 'default', 
       :desc => 'Indica que estructura se debe utilizar para el formulario [default, formtastic, simple_form]'
@@ -31,12 +31,12 @@ module Lbs
       template("new.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/new.html.#{engine_extension}")
       template("show.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/show.html.#{engine_extension}")
 
-      if form == 'default'       
+      if options.form == 'default'       
         template("_form.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}")
         copy_file("_error_messages.html.#{engine_extension}", "app/views/application/_error_messages.html.#{engine_extension}")
-      elsif form == 'formtastic' 
+      elsif options.form == 'formtastic' 
         template("_form_f.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}")
-      elsif form == 'simple_form'
+      elsif options.form == 'simple_form'
         template("_form_s.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}")
       end
     end
@@ -58,6 +58,6 @@ module Lbs
     end
 
     def filter_engine_user_param
-      %w(erb haml).member?(options.engine) ? options.engine : 'erb'
+      %w(erb haml).member?(options.template_engine) ? options.template_engine : 'erb'
     end
   end
