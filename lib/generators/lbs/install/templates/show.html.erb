@@ -1,0 +1,16 @@
+<p id="notice"><%%%= notice %></p>
+
+<%% attributes.each do |attribute| -%>
+<p>
+  <b><%%= attribute.human_name %>:</b>
+  <%%%= @<%%= singular_table_name %>.<%%= attribute.name %> %>
+</p>
+
+<%% end -%>
+
+<%- if options.cancan? -%>
+<%%%= link_to 'Editar', edit_<%%= singular_table_name %>_path(@<%%= singular_table_name %>) if can? :update <%%= singular_table_name.camelize %> %>
+<%- else -%>
+<%%%= link_to 'Editar', edit_<%%= singular_table_name %>_path(@<%%= singular_table_name %>) %>
+<%- end -%>
+| <%%%= link_to 'Listado', <%%= index_helper %>_path %>
