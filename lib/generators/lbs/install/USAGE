@@ -1,0 +1,13 @@
+Description:
+    Generates the templates to be used for scaffold. It allows to specify the template-engine (erb or haml) the form-builder (default, formtastic, simple_form) and if the controller and links in the views will include cancan
+
+Example:
+    rails generate lbs_config --template-engine haml --form-builder simple_form --cancan
+
+    This will create:
+        lib/templates/haml/scaffold/index.html.haml
+        lib/templates/haml/scaffold/edit.html.haml
+        lib/templates/haml/scaffold/new.html.haml
+        lib/templates/haml/scaffold/show.html.haml
+        lib/templates/haml/scaffold/_form.html.haml
+        lib/templates/rails/scaffold_controller/controller.rb
