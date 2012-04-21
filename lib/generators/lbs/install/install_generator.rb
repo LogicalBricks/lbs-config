@@ -26,11 +26,11 @@ module Lbs
     no_tasks { attr_accessor :model_name, :table_name, :attributes}
 
     def copy_views
-      template("index.html.#{engine_extension}", "lib/templates/erb/scaffold/index.html.#{engine_extension}")
-      template("edit.html.#{engine_extension}", "lib/templates/erb/scaffold/edit.html.#{engine_extension}")
-      template("new.html.#{engine_extension}", "lib/templates/erb/scaffold/new.html.#{engine_extension}")
-      template("show.html.#{engine_extension}", "lib/templates/erb/scaffold/show.html.#{engine_extension}")
-      template("_form.html.#{engine_extension}", "lib/templates/erb/scaffold/_form.html.#{engine_extension}")
+      template("index.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/index.html.#{engine_extension}")
+      template("edit.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/edit.html.#{engine_extension}")
+      template("new.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/new.html.#{engine_extension}")
+      template("show.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/show.html.#{engine_extension}")
+      template("_form.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}")
       copy_file("_error_messages.html.#{engine_extension}", "app/views/application/_error_messages.html.#{engine_extension}")
     end
 
