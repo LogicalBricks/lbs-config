@@ -13,7 +13,7 @@ module Lbs
     class_option :cancan, 
       :type => :boolean, 
       :default => false, 
-      :desc => 'Indica si las vistas deben validar las ligas generadas por el CRUD por medio de cancan'
+      :desc => 'Indica si se debe validar por cancan (genera vistas con ligas validadas y adapta el controller)'
     class_option :bootstrap, 
       :type => :boolean, 
       :default => false, 
