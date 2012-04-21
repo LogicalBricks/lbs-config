@@ -7,7 +7,6 @@
 </p>
 
 <%% end -%>
-
 <%- if options.cancan? -%>
 <%%%= link_to 'Editar', edit_<%%= singular_table_name %>_path(@<%%= singular_table_name %>) if can? :update <%%= singular_table_name.camelize %> %>
 <%- else -%>
