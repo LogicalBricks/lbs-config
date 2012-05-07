@@ -2,7 +2,11 @@
 
 module Lbs
   class InstallGenerator < Rails::Generators::NamedBase
-    source_root File.expand_path('../templates', __FILE__)
+    if defined? Rieles
+      source_root File.expand_path('../templates/es', __FILE__)
+    else
+      source_root File.expand_path('../templates/en', __FILE__)
+    end
 
     argument :model_attributes, :type => :array, :default => []
 
@@ -23,26 +27,52 @@ module Lbs
       :default => 'default', 
       :desc => 'Indica que estructura se debe utilizar para el formulario [default, formtastic, simple_form]'
 
-    no_tasks { attr_accessor :model_name, :table_name, :attributes}
+    no_tasks { attr_accessor :model_name, :table_name, :attributes }
 
     def copy_views
-      template("index.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/index.html.#{engine_extension}")
-      template("edit.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/edit.html.#{engine_extension}")
-      template("new.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/new.html.#{engine_extension}")
-      template("show.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/show.html.#{engine_extension}")
+      # Se copian las vistas de index, edit, new y show
+      template(
+        "#{engine_extension}/index.html.#{engine_extension}", 
+        "lib/templates/#{engine_extension}/scaffold/index.html.#{engine_extension}"
+      )
+      template(
+        "#{engine_extension}/edit.html.#{engine_extension}", 
+        "lib/templates/#{engine_extension}/scaffold/edit.html.#{engine_extension}"
+      )
+      template(
+        "#{engine_extension}/new.html.#{engine_extension}", 
+        "lib/templates/#{engine_extension}/scaffold/new.html.#{engine_extension}"
+      )
+      template(
+        "#{engine_extension}/show.html.#{engine_extension}", 
+        "lib/templates/#{engine_extension}/scaffold/show.html.#{engine_extension}"
+      )
 
+      # Se copia el _form dependiendo de qué form builder se vaya a utilizar
       if options.form_builder == 'default'       
-        template("_form.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}")
-        copy_file("_error_messages.html.#{engine_extension}", "app/views/application/_error_messages.html.#{engine_extension}")
+        template(
+          "#{engine_extension}/_form.html.#{engine_extension}", 
+          "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}"
+        )
+        copy_file(
+          "#{engine_extension}/__error_messages.html.#{engine_extension}", 
+          "app/views/application/_error_messages.html.#{engine_extension}"
+        )
       elsif options.form_builder == 'formtastic' 
-        template("_form_f.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}")
+        template(
+          "_#{engine_extension}/_form_f.html.#{engine_extension}", 
+          "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}"
+        )
       elsif options.form_builder == 'simple_form'
-        template("_form_s.html.#{engine_extension}", "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}")
+        template(
+          "#{engine_extension}/__form_s.html.#{engine_extension}", 
+          "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}"
+        )
       end
     end
 
     def copy_controller          
-      template("controller.rb", "lib/templates/rails/scaffold_controller/controller.rb")
+      template("../controller.rb", "lib/templates/rails/scaffold_controller/controller.rb")
     end
 
     def copy_model
