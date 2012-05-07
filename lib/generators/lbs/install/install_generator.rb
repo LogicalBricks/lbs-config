@@ -1,7 +1,7 @@
 # encoding: UTF-8
 
 module Lbs
-  class InstallGenerator < Rails::Generators::NamedBase
+  class InstallGenerator < Rails::Generators::Base
     if defined? Rieles
       source_root File.expand_path('../templates/es', __FILE__)
     else
@@ -55,7 +55,7 @@ module Lbs
           "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}"
         )
         copy_file(
-          "#{engine_extension}/__error_messages.html.#{engine_extension}", 
+          "#{engine_extension}/_error_messages.html.#{engine_extension}", 
           "app/views/application/_error_messages.html.#{engine_extension}"
         )
       elsif options.form_builder == 'formtastic' 
@@ -72,7 +72,7 @@ module Lbs
     end
 
     def copy_controller          
-      template("../controller.rb", "lib/templates/rails/scaffold_controller/controller.rb")
+      template("controller.rb", "lib/templates/rails/scaffold_controller/controller.rb")
     end
 
     def copy_model
@@ -91,3 +91,4 @@ module Lbs
       %w(erb haml).member?(options.template_engine) ? options.template_engine : 'erb'
     end
   end
+end
