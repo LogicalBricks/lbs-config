@@ -1,4 +1,4 @@
-%p#notice notice
+%p#notice= notice
 
 <%% attributes.each do |attribute| -%>
 %p
@@ -6,10 +6,7 @@
   = @<%%= singular_table_name %>.<%%= attribute.name %>
 
 <%% end -%>
-<%%- if options.cancan? -%>
-= link_to 'Editar', edit_<%%= singular_table_name %>_path(@<%%= singular_table_name %>) if can? :update <%%= singular_table_name.camelize %>
-<%%- else -%>
-= link_to 'Editar', edit_<%%= singular_table_name %>_path(@<%%= singular_table_name %>)
-<%%- end -%>
+<%= edit_link :instance %>
 \|
-= link_to 'Regresar al listado', <%%= index_helper %>_path
+<%= back_link %>
+

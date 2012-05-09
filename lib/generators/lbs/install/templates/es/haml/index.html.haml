@@ -1,6 +1,6 @@
 %h1 Listado de <%%= plural_table_name.humanize %>
 
-%table
+%table<%= '.table.table-stripped' if options.bootstrap? %>
   %thead
     %tr
     <%%- attributes.each do |attribute| -%>
@@ -16,16 +16,14 @@
     <%%- attributes.each do |attribute| -%>
       %td= <%%= singular_table_name %>.<%%= attribute.name %>
     <%%- end -%>
-    <%%- if options.cancan? -%>
-      %td= link_to 'Mostrar', <%%= singular_table_name %> if can? :read, @<%%= singular_table_name %>
-      %td= link_to 'Editar', edit_<%%= singular_table_name %>_path(<%%= singular_table_name %>) if can? :update, @<%%= singular_table_name %>
-      %td= link_to 'Eliminar', <%%= singular_table_name %>, :confirm => '¿Está usted seguro?', :method => :delete if can? :destroy, @<%%= singular_table_name %>
-    <%%- else -%>
-      %td= link_to 'Mostrar', <%%= singular_table_name %>
-      %td= link_to 'Editar', edit_<%%= singular_table_name %>_path(<%%= singular_table_name %>)
-      %td= link_to 'Eliminar', <%%= singular_table_name %>, :confirm => '¿Está usted seguro?', :method => :delete
-    <%%- end -%>
+      %td<%= show_link %>
+      %td<%= edit_link %>
+      %td<%= destroy_link %>
 
 %br
-<%% nuevo = singular_table_name.split('_').first.ends_with?("a") ? 'Nueva' : 'Nuevo' -%>
-= link_to '<%%= nuevo %> <%%= human_name %>', new_<%%= singular_table_name %>_path
+<%% if singular_table_name.split('_').first =~ /[ad]$/ -%>
+= link_to t('.new', <%%= key_value :default, "t('helpers.links.f_new')" %>, <%%= key_value(:model, "'#{human_name}'") %>), new_<%%= singular_table_name %>_path 
+<%% else %>
+= link_to t('.new', <%%= key_value :default, "t('helpers.links.new')" %>, <%%= key_value(:model, "'#{human_name}'") %>), new_<%%= singular_table_name %>_path
+<%% end %>
+

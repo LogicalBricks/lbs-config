@@ -1,12 +1,21 @@
-<%%%= form_for(@<%%= singular_table_name %>) do |f| %>
+<%%%= form_for @<%%= singular_table_name %><%= form_html_bootstrap %> do |f| %>
   <%% object = "@#{singular_table_name}" -%>
   <%%%= render 'error_messages', <%%= key_value :target, object %> %>
 
 <%% attributes.each do |attribute| -%>
+<%- if options.bootstrap? -%>
+  <div class="control-group">
+    <%%%= f.label :<%%= attribute.name %>, <%%= key_value(:class, "'control-label'") %> %><br />
+    <div class="controls">
+      <%%%= f.<%%= attribute.field_type %> :<%%= attribute.name %>, <%%= key_value(:class, "'text_field'") %> %>
+    </div>
+  </div>
+<%- else -%>
   <div class="field">
     <%%%= f.label :<%%= attribute.name %> %><br />
     <%%%= f.<%%= attribute.field_type %> :<%%= attribute.name %> %>
   </div>
+<%- end -%>
 <%% end -%>
   <div class="actions">
     <%%%= f.submit %>

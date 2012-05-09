@@ -57,7 +57,7 @@ class <%%= controller_class_name %>Controller < ApplicationController
   <%- end -%>
     respond_to do |format|
       if @<%%= orm_instance.save %>
-        <% creado = singular_table_name.match(/[ad]$/) ? 'creada' : 'creado' %>
+        <%% creado = singular_table_name.match(/[ad]$/) ? 'creada' : 'creado' %>
         format.html { redirect_to @<%%= singular_table_name %>, <%%= key_value :notice, "'#{human_name} fue #{creado} correctamente.'" %> }
         format.json { render <%%= key_value :json, "@#{singular_table_name}" %>, <%%= key_value :status, ':created' %>, <%%= key_value :location, "@#{singular_table_name}" %> }
       else
@@ -76,7 +76,7 @@ class <%%= controller_class_name %>Controller < ApplicationController
   <%- end -%>
     respond_to do |format|
       if @<%%= orm_instance.update_attributes("params[:#{singular_table_name}]") %>
-        <% modificado = singular_table_name.match(/[ad]$/) ? 'modificada' : 'modificado' %>
+        <%% modificado = singular_table_name.match(/[ad]$/) ? 'modificada' : 'modificado' %>
         format.html { redirect_to @<%%= singular_table_name %>, <%%= key_value :notice, "'#{human_name} fue #{modificado} correctamente.'" %> }
         format.json { head :no_content }
       else
