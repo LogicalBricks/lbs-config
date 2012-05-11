@@ -2,11 +2,7 @@
 
 module Lbs
   class InstallGenerator < Rails::Generators::Base
-    if defined? Rieles
-      source_root File.expand_path('../templates/es', __FILE__)
-    else
-      source_root File.expand_path('../templates/en', __FILE__)
-    end
+    source_root File.expand_path('../templates', __FILE__)
 
     argument :model_attributes, :type => :array, :default => []
 
