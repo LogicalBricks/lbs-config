@@ -27,7 +27,7 @@ module Lbs
       :default => 'default', 
       :desc => 'Indica que estructura se debe utilizar para el formulario [default, formtastic, simple_form]'
 
-    no_tasks { attr_accessor :show_link, :edit_link, :destroy_link }
+    no_tasks { attr_accessor :show_link, :edit_link, :destroy_link, :new_link }
 
     def copy_views
       # Se copian las vistas de index, edit, new y show
@@ -83,11 +83,11 @@ module Lbs
       v = '<%= singular_table_name %>'
       v = '@' + v if variable == :instance
       show_link = ""
-      show_link += "<%%" if engine_extension == 'erb'
+      show_link += "<%%" if erb?
       show_link = "= link_to t('.show', default: t('helpers.links.show')), #{v}"
       show_link += ", <%= key_value 'class', \"'btn btn-mini'\" %>" if options.bootstrap?
       show_link += " if can? :read, #{v}" if options.cancan?
-      show_link += "%>" if engine_extension == 'erb'
+      show_link += "%>" if erb?
       show_link
     end
 
@@ -95,11 +95,11 @@ module Lbs
       v = '<%= singular_table_name %>'
       v = '@' + v if variable == :instance
       show_link = ""
-      show_link += "<%%" if engine_extension == 'erb'
+      show_link += "<%%" if erb?
       show_link = "= link_to t('.edit', default: t('helpers.links.edit')), edit_<%= singular_table_name %>_path(#{v})"
       show_link += ", <%= key_value 'class', \"'btn btn-mini'\" %>" if options.bootstrap?
       show_link += " if can? :update, #{v}" if options.cancan?
-      show_link += "%>" if engine_extension == 'erb'
+      show_link += "%>" if erb?
       show_link
     end
 
@@ -107,23 +107,40 @@ module Lbs
       v = '<%= singular_table_name %>'
       v = '@' + v if variable == :instance
       show_link = ""
-      show_link += "<%%" if engine_extension == 'erb'
+      show_link += "<%%" if erb?
       show_link += "= link_to t('.destroy', default: t('helpers.links.destroy')), #{v}, <%= key_value :confirm, \"'¿Está usted seguro?'\" %>, <%= key_value :method, ':delete' %>"
       show_link += ", <%= key_value 'class', \"'btn btn-mini btn-danger'\" %>" if options.bootstrap?
       show_link += " if can? :read, #{v}" if options.cancan?
-      show_link += "%>" if engine_extension == 'erb'
+      show_link += "%>" if erb?
       show_link
     end
 
     def back_link
       v = '<%= singular_table_name.camelize %>'
       show_link = ""
-      show_link += "<%%" if engine_extension == 'erb'
+      show_link += "<%%" if erb?
       show_link = "= link_to t('.back', default: t('helpers.links.back')), <%= index_helper %>_path"
-      show_link += ", <%= key_value 'class', \"'btn btn-mini btn-danger'\" %>" if options.bootstrap?
+      show_link += ", <%= key_value 'class', \"'btn btn-mini'\" %>" if options.bootstrap?
       show_link += " if can? :read, #{v}" if options.cancan?
-      show_link += "%>" if engine_extension == 'erb'
+      show_link += "%>" if erb?
       show_link
+    end
+
+    def new_link
+      str_inicio = erb? ? "<%%" : ""
+      str_fin = erb? ? " %>" : ""
+      v = '<%= singular_table_name.camelize %>'
+      str_can = options.cancan? ? " if can? :create, #{v}" : ""
+      if defined? Rieles
+        r = "<% if singular_table_name.split('_').first =~ /[ad]$/ -%>\n"
+        r += %(#{str_inicio}= link_to t('.new', <%= key_value :default, "t('helpers.links.f_new')" %>, <%= key_value(:model, "'\#{human_name}'") %>), new_<%= singular_table_name %>_path#{str_can}#{str_fin}\n)
+        r += "<% else %>\n"
+        r += %(#{str_inicio}= link_to t('.new', <%= key_value :default, "t('helpers.links.new')" %>, <%= key_value(:model, "'\#{human_name}'") %>), new_<%= singular_table_name %>_path#{str_can}#{str_fin}\n)
+        r += "<% end %>"
+        r
+      else
+        %(#{str_inicio}= link_to "New \#{human_name}", new_<%%= singular_table_name %>_path#{str_can}#{str_fin})
+      end 
     end
 
     def form_html_bootstrap
@@ -140,6 +157,10 @@ module Lbs
 
     def filter_engine_user_param
       %w(erb haml).member?(options.template_engine) ? options.template_engine : 'erb'
+    end
+
+    def erb?
+      engine_extension == 'erb'
     end
   end
 end

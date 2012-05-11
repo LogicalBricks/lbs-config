@@ -6,9 +6,13 @@
 <%% attributes.each do |attribute| -%>
       <th><%%= attribute.human_name %></th>
 <%% end -%>
+<%- if options.bootstrap? -%>
+      <th><%%= t('.options', <%= key_value(:default, "'helpers.options'") %>) %></th>
+<%- else -%>
       <th></th>
       <th></th>
       <th></th>
+<%- end -%>
     </tr>
   </thead>
 
@@ -18,18 +22,21 @@
 <%% attributes.each do |attribute| -%>
       <td><%%%= <%%= singular_table_name %>.<%%= attribute.name %> %></td>
 <%% end -%>
+<%- if options.bootstrap? -%>
+      <td>
+        <%= show_link %>
+        <%= edit_link %>
+        <%= destroy_link %>
+      </td>
+<%- else -%>
       <td><%= show_link %></td>
       <td><%= edit_link %></td>
       <td><%= destroy_link %></td>
+<%- end -%>
     </tr>
   <%%% end %>
   </tbody>
 </table>
 
 <br />
-<%% if singular_table_name.split('_').first =~ /[ad]$/ -%>
-<%%%= link_to t('.new', <%%= key_value :default, "t('helpers.links.f_new')" %>, <%%= key_value(:model, "'#{human_name}'") %>), new_<%%= singular_table_name %>_path %>
-<%% else %>
-<%%%= link_to t('.new', <%%= key_value :default, "t('helpers.links.new')" %>, <%%= key_value(:model, "'#{human_name}'") %>), new_<%%= singular_table_name %>_path %>
-<%% end %>
-
+<%= new_link %>
