@@ -4,8 +4,6 @@ module Lbs
   class InstallGenerator < Rails::Generators::Base
     source_root File.expand_path('../templates', __FILE__)
 
-    argument :model_attributes, :type => :array, :default => []
-
     class_option :template_engine, 
       :type => :string, 
       :default => 'erb', 
@@ -17,7 +15,7 @@ module Lbs
     class_option :bootstrap, 
       :type => :boolean, 
       :default => false, 
-      :desc => 'Indica si la vista se generará enfocada en boostrap'
+      :desc => 'Indica si la vista se generará enfocada en bootstrap'
     class_option :form_builder, 
       :type => :string, 
       :default => 'default', 
@@ -54,7 +52,7 @@ module Lbs
           "#{engine_extension}/_error_messages.html.#{engine_extension}", 
           "app/views/application/_error_messages.html.#{engine_extension}"
         )
-      elsif options.form_builder == 'formtastic' 
+      elsif options.form_builder == 'formtastic'
         template(
           "_#{engine_extension}/_form_f.html.#{engine_extension}", 
           "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}"
@@ -78,64 +76,44 @@ module Lbs
     def show_link variable = :local
       v = '<%= singular_table_name %>'
       v = '@' + v if variable == :instance
-      show_link = ""
-      show_link += "<%%" if erb?
-      show_link = "= link_to t('.show', default: t('helpers.links.show')), #{v}"
-      show_link += ", <%= key_value 'class', \"'btn btn-mini'\" %>" if options.bootstrap?
-      show_link += " if can? :read, #{v}" if options.cancan?
-      show_link += "%>" if erb?
-      show_link
+      complete_syntax :show, v do
+        "= link_to t('.show', default: t('helpers.links.show')), #{v}"
+      end
     end
 
     def edit_link variable = :local
       v = '<%= singular_table_name %>'
       v = '@' + v if variable == :instance
-      show_link = ""
-      show_link += "<%%" if erb?
-      show_link = "= link_to t('.edit', default: t('helpers.links.edit')), edit_<%= singular_table_name %>_path(#{v})"
-      show_link += ", <%= key_value 'class', \"'btn btn-mini'\" %>" if options.bootstrap?
-      show_link += " if can? :update, #{v}" if options.cancan?
-      show_link += "%>" if erb?
-      show_link
+      complete_syntax :edit, v do
+        "= link_to t('.edit', default: t('helpers.links.edit')), edit_<%= singular_table_name %>_path(#{v})"
+      end
     end
 
     def destroy_link variable = :local
       v = '<%= singular_table_name %>'
       v = '@' + v if variable == :instance
-      show_link = ""
-      show_link += "<%%" if erb?
-      show_link += "= link_to t('.destroy', default: t('helpers.links.destroy')), #{v}, <%= key_value :confirm, \"'¿Está usted seguro?'\" %>, <%= key_value :method, ':delete' %>"
-      show_link += ", <%= key_value 'class', \"'btn btn-mini btn-danger'\" %>" if options.bootstrap?
-      show_link += " if can? :read, #{v}" if options.cancan?
-      show_link += "%>" if erb?
-      show_link
+      complete_syntax :destroy, v do
+        "= link_to t('.destroy', default: t('helpers.links.destroy')), #{v}, <%= key_value :confirm, \"t'helpers.links.confirm')\" %>, <%= key_value :method, ':delete' %>"
+      end
     end
 
     def back_link
       v = '<%= singular_table_name.camelize %>'
-      show_link = ""
-      show_link += "<%%" if erb?
-      show_link = "= link_to t('.back', default: t('helpers.links.back')), <%= index_helper %>_path"
-      show_link += ", <%= key_value 'class', \"'btn btn-mini'\" %>" if options.bootstrap?
-      show_link += " if can? :read, #{v}" if options.cancan?
-      show_link += "%>" if erb?
-      show_link
+      complete_syntax(v) do
+        "= link_to t('.back', default: t('helpers.links.back')), <%= index_helper %>_path"
+      end
     end
 
     def new_link
-      str_inicio = erb? ? "<%%" : ""
-      str_fin = erb? ? " %>" : ""
       v = '<%= singular_table_name.camelize %>'
-      str_can = options.cancan? ? " if can? :create, #{v}" : ""
       if defined? Rieles
         r = "<% if singular_table_name.split('_').first =~ /[ad]$/ -%>\n"
-        r += %(#{str_inicio}= link_to t('.new', <%= key_value :default, "t('helpers.links.f_new')" %>, <%= key_value(:model, "'\#{human_name}'") %>), new_<%= singular_table_name %>_path#{str_can}#{str_fin}\n)
-        r += "<% else %>\n"
-        r += %(#{str_inicio}= link_to t('.new', <%= key_value :default, "t('helpers.links.new')" %>, <%= key_value(:model, "'\#{human_name}'") %>), new_<%= singular_table_name %>_path#{str_can}#{str_fin}\n)
-        r += "<% end %>"
-        r
+        r += female_new_link v
+        r += "\n<% else %>\n"
+        r += male_new_link v
+        r += "\n<% end %>"
       else
-        %(#{str_inicio}= link_to "New \#{human_name}", new_<%%= singular_table_name %>_path#{str_can}#{str_fin})
+        complete_syntax(v) { %(= link_to "New \#{human_name}", new_<%%= singular_table_name %>_path) }
       end 
     end
 
@@ -157,6 +135,73 @@ module Lbs
 
     def erb?
       engine_extension == 'erb'
+    end
+
+    def complete_syntax type = :show, v
+      erb_syntax do
+        cancan_syntax type, v do
+          bootstrap_syntax type do
+            yield
+          end
+        end
+      end # erb_syntax
+    end
+
+    def erb_syntax
+      if erb?
+        "<%%" + yield + "%>"
+      else
+        yield
+      end
+    end
+
+    def cancan_syntax type = :show, v
+      options.cancan? ? yield + " if can? :read, #{v}" : yield
+      if options.cancan?
+        str = case type
+              when :show
+                'read'
+              when :destroy
+                'destroy'
+              when :new
+                'create'
+              when :edit
+                'update'
+              end
+        yield + " if can? :#{str}, #{v}"
+      else
+        yield
+      end
+    end
+
+    def bootstrap_syntax type = :show
+      if options.bootstrap?
+        str = 'btn btn-mini'
+        str += ' btn-mini-danger' if type == :destroy
+        yield + ", <%= key_value :class, \"'#{str}'\" %>"
+      else
+        yield
+      end
+    end
+
+    def female_new_link v
+      erb_syntax do
+        cancan_syntax :new, v do
+          bootstrap_syntax :new do
+            %(= link_to t('.new', <%= key_value :default, "t('helpers.links.f_new')" %>, <%= key_value(:model, "'\#{human_name}'") %>), new_<%= singular_table_name %>_path)
+          end
+        end
+      end # erb_syntax
+    end
+
+    def male_new_link v
+      erb_syntax do
+        cancan_syntax :new, v do
+          bootstrap_syntax :new do
+            %(= link_to t('.new', <%= key_value :default, "t('helpers.links.new')" %>, <%= key_value(:model, "'\#{human_name}'") %>), new_<%= singular_table_name %>_path)
+          end
+        end
+      end # erb_syntax
     end
   end
 end
