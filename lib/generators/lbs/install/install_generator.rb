@@ -93,7 +93,7 @@ module Lbs
       v = '<%= singular_table_name %>'
       v = '@' + v if variable == :instance
       complete_syntax :destroy, v do
-        "= link_to t('.destroy', default: t('helpers.links.destroy')), #{v}, <%= key_value :confirm, \"t'helpers.links.confirm')\" %>, <%= key_value :method, ':delete' %>"
+        "= link_to t('.destroy', default: t('helpers.links.destroy')), #{v}, <%= key_value :confirm, \"t('helpers.links.confirm')\" %>, <%= key_value :method, ':delete' %>"
       end
     end
 
