@@ -18,7 +18,9 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Example:
+
+    $ rails g lbs:install --cancan --bootstrap
 
 ## Contributing
 
