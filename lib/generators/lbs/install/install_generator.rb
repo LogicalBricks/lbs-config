@@ -113,7 +113,7 @@ module Lbs
         r += male_new_link v
         r += "\n<% end %>"
       else
-        complete_syntax(v) { %(= link_to "New \#{human_name}", new_<%%= singular_table_name %>_path) }
+        complete_syntax(v) { %(= link_to "New <%= human_name %>", new_<%= singular_table_name %>_path) }
       end 
     end
 
