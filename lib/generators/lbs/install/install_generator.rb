@@ -11,7 +11,7 @@ module Lbs
     class_option :cancan, 
       :type => :boolean, 
       :default => false, 
-      :desc => 'Indica si se debe validar por cancan (genera vistas con ligas validadas y adapta el controller)'
+      :desc => 'Indica si se debe validar por cancan (se agrega la validación de cancan a las ligas en las vistas y se adapta el controller)'
     class_option :bootstrap, 
       :type => :boolean, 
       :default => false, 
