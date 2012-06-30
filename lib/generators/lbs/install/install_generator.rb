@@ -66,7 +66,7 @@ module Lbs
       end
     end
 
-    def copy_controller          
+    def copy_controller
       template("controller.rb", "lib/templates/rails/scaffold_controller/controller.rb")
     end
 
