@@ -1,0 +1,18 @@
+<%%%= form_for @<%%= singular_table_name %>, <%= key_value(:html, { :class => 'form-horizontal' }) %> do |f| %>
+  <%% object = "@#{singular_table_name}" -%>
+  <%%%= render 'error_messages', <%%= key_value :target, object %> %>
+
+  <fieldset>
+<%% attributes.each do |attribute| -%>
+    <div class="control-group">
+      <%%%= f.label :<%%= attribute.name %>, <%%= key_value(:class, "'control-label'") %> %><br />
+      <div class="controls">
+        <%%%= f.<%%= attribute.field_type %> :<%%= attribute.name %>, <%%= key_value(:class, "'text_field'") %> %>
+      </div>
+    </div>
+<%% end -%>
+    <div class="actions">
+      <%%%= f.submit %>
+    </div>
+  </fieldset>
+<%%% end %>

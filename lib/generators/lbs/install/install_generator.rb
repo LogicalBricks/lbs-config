@@ -43,13 +43,14 @@ module Lbs
       )
 
       # Se copia el _form dependiendo de qué form builder se vaya a utilizar
-      if options.form_builder == 'default'       
+      if options.form_builder == 'default'
+        suffix = options.bootstrap? ? '_b' : ''
         template(
-          "#{engine_extension}/_form.html.#{engine_extension}", 
+          "#{engine_extension}/_form#{suffix}.html.#{engine_extension}", 
           "lib/templates/#{engine_extension}/scaffold/_form.html.#{engine_extension}"
         )
         copy_file(
-          "#{engine_extension}/_error_messages.html.#{engine_extension}", 
+          "#{engine_extension}/_error_messages#{suffix}.html.#{engine_extension}", 
           "app/views/application/_error_messages.html.#{engine_extension}"
         )
       elsif options.form_builder == 'formtastic'
@@ -115,10 +116,6 @@ module Lbs
       else
         complete_syntax(v) { %(= link_to "New <%= human_name %>", new_<%= singular_table_name %>_path) }
       end 
-    end
-
-    def form_html_bootstrap
-      ", <%= key_value(:html, { :class => 'form-horizontal' }) %>" if options.bootstrap?
     end
 
     #####################

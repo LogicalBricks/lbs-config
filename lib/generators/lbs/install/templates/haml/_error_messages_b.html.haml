@@ -1,0 +1,11 @@
+- if target.errors.any?
+  - gender ||= target.class.name.ends_with?("a") ? "female" : "male"
+  - model_name ||= target.class.name.underscore.humanize.downcase
+  .alert.alert-error
+    %button.close{type: 'button', data: {dismiss: 'alert'}} ×
+    %h3
+      = t('activerecord.errors.template.header', :count => target.errors.count, :model => model_name, :article => (gender == "male" ? "El" : "La"))
+    %em= t('activerecord.errors.template.body')
+    %ul
+      - target.errors.full_messages.each do |msg|
+        %li= msg

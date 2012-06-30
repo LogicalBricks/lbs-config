@@ -16,19 +16,19 @@
 
   %tbody
   - @<%%= plural_table_name %>.each do |<%%= singular_table_name %>| 
-    %tr
-    <%%- attributes.each do |attribute| -%>
-      %td= <%%= singular_table_name %>.<%%= attribute.name %>
-    <%%- end -%>
+      %tr
+      <%%- attributes.each do |attribute| -%>
+        %td= <%%= singular_table_name %>.<%%= attribute.name %>
+      <%%- end -%>
 <%- if options.bootstrap? -%>
-      %td
-        <%= show_link %>
-        <%= edit_link %>
-        <%= destroy_link %>
+        %td
+          <%= show_link %>
+          <%= edit_link %>
+          <%= destroy_link %>
 <%- else -%>
-      %td<%= show_link %>
-      %td<%= edit_link %>
-      %td<%= destroy_link %>
+        %td<%= show_link %>
+        %td<%= edit_link %>
+        %td<%= destroy_link %>
 <%- end -%>
 
 %br
